@@ -4,6 +4,12 @@ All notable changes to NablaNet are documented here. The project follows
 semantic versioning; pre-1.0 minor releases may contain source-compatible
 breaking changes.
 
+## Unreleased
+
+- Added an extensible, standalone norm contract with vector, parameter, and
+  gradient helpers and stable L-p evaluation for real p >= 1 and infinity.
+  Norm diagnostics are independent of regularization and training behavior.
+
 ## 0.1.0 - 2026-08-27
 
 - Established the `nablanet` C++ namespace, `<nablanet/...>` public headers,

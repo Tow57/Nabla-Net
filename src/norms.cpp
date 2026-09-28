@@ -90,7 +90,7 @@ double vector_norm(const Values& values, const NormFunction& norm)
     return result;
 }
 
-double parameter_norm(
+double network_norm(
     const MLP& network, const NormFunction& norm, const bool include_biases)
 {
     validate_norm_function(norm);
@@ -108,7 +108,7 @@ double parameter_norm(
     return vector_norm(values, norm);
 }
 
-double gradient_norm(
+double network_norm(
     const NetworkGradients& gradients, const NormFunction& norm,
     const bool include_biases)
 {

@@ -84,10 +84,10 @@ norm diagnostics independently of objectives and regularizers:
 ```cpp
 const auto l2 = nablanet::make_lp_norm(2.0);
 const double length = nablanet::vector_norm({3.0, 4.0}, l2); // 5, not 25
-const double parameters = nablanet::parameter_norm(network, l2); // with biases
-const double weights = nablanet::parameter_norm(network, l2, false);
+const double parameters = nablanet::network_norm(network, l2); // with biases
+const double weights = nablanet::network_norm(network, l2, false);
 const auto gradients = nablanet::make_zero_gradients_like(network);
-const double gradient_length = nablanet::gradient_norm(gradients, l2);
+const double gradient_length = nablanet::network_norm(gradients, l2);
 ```
 
 The factory accepts any finite real `p >= 1`, including fractional values, or
@@ -120,10 +120,11 @@ const nablanet::NormFunction weighted_l1{
 }; // include <cmath> for std::abs
 ```
 
-Parameter and gradient helpers evaluate one global vector in layer order:
+`network_norm` is overloaded for `MLP` parameters and `NetworkGradients`.
+Both overloads evaluate one global vector in layer order:
 weights, then selected biases, in their stored order. Biases are included by
 default. Parameters require a valid network (including finite excluded biases);
-gradient helpers require only finite selected components, not a reference
+the gradient overload requires only finite selected components, not a reference
 network. These are entrywise vector norms, not induced matrix/operator norms.
 The existing `gradient_l2_norm` and `maximum_absolute_gradient` APIs are unchanged.
 

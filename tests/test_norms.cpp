@@ -131,38 +131,38 @@ void test_contract_and_layout()
     network.layers[0].biases = { 3.0 };
     network.layers[1].weights = { 4.0 };
     network.layers[1].biases = { -5.0 };
-    near(parameter_norm(network, custom), 15.0, "all parameters");
+    near(network_norm(network, custom), 15.0, "all parameters");
     require(observed == Values({ -1, 2, 3, 4, -5 }) && calls == 1,
         "one global vector, layer/weight/bias order");
-    near(parameter_norm(network, custom, false), 7.0, "weight-only parameters");
+    near(network_norm(network, custom, false), 7.0, "weight-only parameters");
     require(observed == Values({ -1, 2, 4 }), "bias exclusion order");
-    near(parameter_norm(network, l2), std::sqrt(55.0), "global L2, not sum of layer norms");
+    near(network_norm(network, l2), std::sqrt(55.0), "global L2, not sum of layer norms");
     require(network.layers[0].weights == Values({ -1, 2 }) &&
         network.layers[1].biases == Values({ -5 }), "network stays unchanged");
 
     NetworkGradients gradients;
     gradients.layers = { { { -1, 2 }, { 3 } }, { { 4 }, { -5 } } };
-    near(gradient_norm(gradients, custom), 15.0, "gradient components");
+    near(network_norm(gradients, custom), 15.0, "gradient components");
     require(observed == Values({ -1, 2, 3, 4, -5 }), "gradient flattening order");
-    near(gradient_norm(gradients, custom, false), 7.0, "weight-only gradients");
+    near(network_norm(gradients, custom, false), 7.0, "weight-only gradients");
     require(observed == Values({ -1, 2, 4 }), "gradient bias exclusion order");
-    near(gradient_norm(gradients, l2), gradient_l2_norm(gradients), "legacy L2 agreement");
-    near(gradient_norm(gradients, make_lp_norm(std::numeric_limits<double>::infinity())),
+    near(network_norm(gradients, l2), gradient_l2_norm(gradients), "legacy L2 agreement");
+    near(network_norm(gradients, make_lp_norm(std::numeric_limits<double>::infinity())),
         maximum_absolute_gradient(gradients), "legacy infinity agreement");
-    near(gradient_norm({}, l1), 0.0, "empty gradients");
+    near(network_norm(NetworkGradients{}, l1), 0.0, "empty gradients");
     gradients.layers[0].biases[0] = std::numeric_limits<double>::infinity();
-    throws<std::invalid_argument>([&] { gradient_norm(gradients, l1); }, "invalid gradient");
-    near(gradient_norm(gradients, l1, false), 7.0, "excluded gradient bias not inspected");
+    throws<std::invalid_argument>([&] { network_norm(gradients, l1); }, "invalid gradient");
+    near(network_norm(gradients, l1, false), 7.0, "excluded gradient bias not inspected");
     gradients.layers[0].weights[0] = std::numeric_limits<double>::quiet_NaN();
-    throws<std::invalid_argument>([&] { gradient_norm(gradients, l1, false); }, "invalid weight gradient");
+    throws<std::invalid_argument>([&] { network_norm(gradients, l1, false); }, "invalid weight gradient");
 
     network.layers[0].biases[0] = std::numeric_limits<double>::infinity();
-    throws<std::invalid_argument>([&] { parameter_norm(network, l1, false); },
+    throws<std::invalid_argument>([&] { network_norm(network, l1, false); },
         "whole network is validated even if biases are excluded");
     network.layers[0].biases[0] = 3.0;
     network.layers[0].weights.pop_back();
-    throws<std::invalid_argument>([&] { parameter_norm(network, l1); }, "malformed network");
-    throws<std::invalid_argument>([&] { parameter_norm({}, l1); }, "empty network is invalid");
+    throws<std::invalid_argument>([&] { network_norm(network, l1); }, "malformed network");
+    throws<std::invalid_argument>([&] { network_norm(MLP{}, l1); }, "empty network is invalid");
 }
 } // namespace
 

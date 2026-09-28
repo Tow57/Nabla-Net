@@ -30,7 +30,7 @@ double vector_norm(const Values& values, const NormFunction& norm);
 
 /// Validates the network, then evaluates one vector containing each layer's
 /// weights followed by its biases (if selected), in stored order.
-double parameter_norm(
+double network_norm(
     const MLP& network,
     const NormFunction& norm,
     bool include_biases = true
@@ -39,7 +39,7 @@ double parameter_norm(
 /// Evaluates one vector of gradient components in the same order as parameters.
 /// Selected components must be finite; no reference network/shape is required.
 /// Empty gradients return zero. Excluded biases are not inspected.
-double gradient_norm(
+double network_norm(
     const NetworkGradients& gradients,
     const NormFunction& norm,
     bool include_biases = true

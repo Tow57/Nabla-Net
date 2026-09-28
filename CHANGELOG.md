@@ -6,8 +6,9 @@ breaking changes.
 
 ## Unreleased
 
-- Added an extensible, standalone norm contract with vector, parameter, and
-  gradient helpers and stable L-p evaluation for real p >= 1 and infinity.
+- Added an extensible, standalone norm contract with `vector_norm` and
+  `network_norm` overloads for parameters and gradients, plus stable L-p
+  evaluation for real p >= 1 and infinity.
   Norm diagnostics are independent of regularization and training behavior.
 
 ## 0.1.0 - 2026-08-27
